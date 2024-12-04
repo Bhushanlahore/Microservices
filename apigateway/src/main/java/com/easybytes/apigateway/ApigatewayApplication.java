@@ -32,5 +32,10 @@ public class ApigatewayApplication {
 						.uri("lb://LOANS")).build();
 		
 	}
+	
+	@Bean
+	 void m1() {
+		
+	}
 
 }
