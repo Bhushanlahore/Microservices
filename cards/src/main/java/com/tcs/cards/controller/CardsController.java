@@ -1,5 +1,7 @@
 package com.tcs.cards.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +20,7 @@ import com.tcs.cards.constants.CardConstants;
 import com.tcs.cards.dto.CardDto;
 import com.tcs.cards.dto.ResponseDto;
 import com.tcs.cards.service.ICardService;
+
 
 import lombok.AllArgsConstructor;
 
@@ -27,6 +31,8 @@ public class CardsController {
 
 	
 	private ICardService iCardService;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CardsController.class);
 
 	@PostMapping("/create/{number}")
 	public ResponseEntity<ResponseDto> createCard(@PathVariable("number") String mobileNumber){
@@ -39,8 +45,9 @@ public class CardsController {
 	
 	
 	@GetMapping("/fetch")
-	public ResponseEntity<CardDto> fetchCardDetails(@RequestParam String mobileNumber){
+	public ResponseEntity<CardDto> fetchCardDetails(@RequestHeader("eazybank-correlation-id") String correlationId,@RequestParam String mobileNumber){
 		
+		LOGGER.debug("eazybank-correlation-id found in CardsController:{}", correlationId);
 		CardDto fetchCard = iCardService.fetchCard(mobileNumber);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(fetchCard);	

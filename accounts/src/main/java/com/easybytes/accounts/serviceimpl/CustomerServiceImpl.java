@@ -31,7 +31,7 @@ public class CustomerServiceImpl implements ICustomerService{
 	private LoansFeignClient loansFeignClient;
 
 	@Override
-	public CustomerDetailsDto fetchCustomerDetails(String number) {
+	public CustomerDetailsDto fetchCustomerDetails(String number, String correlationId) {
 		// TODO Auto-generated method stub
 		
 		Customer customer = customerRepository.findByMobileNumber(number)
@@ -43,10 +43,10 @@ public class CustomerServiceImpl implements ICustomerService{
 		CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(customer, new CustomerDetailsDto());
 		customerDetailsDto.setAccountDto(AccountsMapper.mapToAccountsDto(accounts, new AccountsDto()));
 		
-		ResponseEntity<CardDto> fetchCardDetails = cardsFeignClient.fetchCardDetails(number);
+		ResponseEntity<CardDto> fetchCardDetails = cardsFeignClient.fetchCardDetails(correlationId, number);
 		customerDetailsDto.setCardsDto(fetchCardDetails.getBody());
 		
-		ResponseEntity<LoansDto> fetchLoan = loansFeignClient.fetchLoan(number);
+		ResponseEntity<LoansDto> fetchLoan = loansFeignClient.fetchLoan(correlationId,number);
 		customerDetailsDto.setLoansDto(fetchLoan.getBody());
 		
 		return customerDetailsDto;
