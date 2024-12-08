@@ -4,6 +4,6 @@ import com.easybytes.accounts.dto.CustomerDetailsDto;
 
 public interface ICustomerService {
 	
-	CustomerDetailsDto fetchCustomerDetails(String number);
+	CustomerDetailsDto fetchCustomerDetails(String number, String correlationId);
 
 }

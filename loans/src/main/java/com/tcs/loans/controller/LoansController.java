@@ -1,5 +1,7 @@
 package com.tcs.loans.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,8 @@ public class LoansController {
 	
 	private ILoansService iLoansService;
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoansController.class);
+	
 	@PostMapping("/create")
 	public ResponseEntity<ResponseDto> createLoan(@RequestParam
             @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
@@ -39,8 +44,9 @@ public class LoansController {
 	
 	
 	@GetMapping("/fetch")
-	public ResponseEntity<LoansDto> fetchLoan(@RequestParam String mobileNumber){
+	public ResponseEntity<LoansDto> fetchLoan(@RequestHeader("eazybank-correlation-id") String correlationId,@RequestParam String mobileNumber){
 		
+		LOGGER.debug("eazybank-correlation-id found in LoansController:{}", correlationId);
 		LoansDto fetchLoan = iLoansService.fetchLoan(mobileNumber);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(fetchLoan);
