@@ -1,6 +1,8 @@
 package com.easybytes.apigateway;
 
+import java.io.ObjectInputFilter.Config;
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +27,9 @@ public class ApigatewayApplication {
 				.route(p-> p
 						.path("/eazybank/accounts/**")
 						.filters(f->f.rewritePath("/eazybank/accounts/(?<segment>.*)", "/${segment}")
-						.addResponseHeader("X-Response_Time", LocalDateTime.now().toString()))
+						.addResponseHeader("X-Response_Time", LocalDateTime.now().toString())
+						.circuitBreaker(config -> config.setName("accountCircuitBreaker")
+						.setFallbackUri("forward:/contact-support")))
 						.uri("lb://ACCOUNTS"))
 				.route(p->p
 						.path("/eazybank/cards/**")
