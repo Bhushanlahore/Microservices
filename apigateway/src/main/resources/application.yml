@@ -36,7 +36,7 @@ logging:
 
 resilience4j.circuitbreaker:
   configs:
-    accountCircuitBreaker:
+    default:
       slidingWindowSize: 10
       permittedNumberOfCallsInHalfOpenState: 2
       failureRateThreshold: 50

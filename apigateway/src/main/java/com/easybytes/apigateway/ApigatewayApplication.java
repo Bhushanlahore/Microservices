@@ -34,14 +34,17 @@ public class ApigatewayApplication {
 				.route(p->p
 						.path("/eazybank/cards/**")
 						.filters(f->f.rewritePath("/eazybank/cards/(?<segment>.*)", "/${segment}")
-						.addResponseHeader("X-Response_Time", LocalDateTime.now().toString()))
+						.addResponseHeader("X-Response_Time", LocalDateTime.now().toString())
+						.circuitBreaker(config -> config.setName("accountCircuitBreaker")
+						.setFallbackUri("forward:/contact-support")))
 						.uri("lb://CARDS"))
 				.route(p->p
 						.path("/eazybank/loans/**")
 						.filters(f->f.rewritePath("/eazybank/loans/(?<segment>.*)", "/${segment}")
-						.addResponseHeader("X-Response_Time", LocalDateTime.now().toString()))
-						.uri("lb://LOANS")).build();
-		
+						.addResponseHeader("X-Response_Time", LocalDateTime.now().toString())
+						.circuitBreaker(config -> config.setName("accountCircuitBreaker")
+						.setFallbackUri("forward:/contact-support")))
+						.uri("lb://LOANS")).build();	
 	}
 	
 	
